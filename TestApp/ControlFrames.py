@@ -13,7 +13,7 @@ class IMUPlot(tkinter.Canvas):
     IMUPlot is a matplotlib implementation that will continuously plot a datafeed
     from an arduino.
     """
-    def __init__(self):
+    def __init__(self, appmod=None):
         tkinter.Canvas.__init__(self)
         self.dpi = 100
 
@@ -56,14 +56,14 @@ class IMUPlot(tkinter.Canvas):
         self.canvas.show()
         self.canvas.get_tk_widget().place(relx=0, rely= 0, relheight = 1, relwidth = 1)
 
-        self.ani = animation.FuncAnimation(self.graphfigure, self.animate, interval = 1000)
+        #self.ani = animation.FuncAnimation(self.graphfigure, self.animate, interval = 1000)
 
 
     def animate(self, i):
         pass
 
 class Panel(tkinter.LabelFrame):
-    def __init__(self):
+    def __init__(self, devicemod=None):
         tkinter.LabelFrame.__init__(self, text="Controls", bg="#292929", fg = ("#BFBFBF"), font=("Helvetica",12))
         self.create_buttons()
         self.create_switches()

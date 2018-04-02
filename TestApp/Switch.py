@@ -36,8 +36,11 @@ class SwitchButton(tkinter.Frame):
         self.drawBUT(0)
 
         #create and place the description widget
-        self.textLabel = tkinter.Label(self.sliderFrame, textvariable=self.labelText,font=self.default_font,bg=self.bg)
-        self.textLabel.place(relx = 0, rely = 0.85, relheight = 0.1, relwidth = 1)
+        self.textLabel = tkinter.Label(self.sliderFrame, textvariable=self.labelText,font=self.default_font,bg=self.bg, fg="#BFBFBF")
+        self.offLabel = tkinter.Label(self.sliderCanvas, text="usb", font=self.default_font,bg=self.bg,fg="#BFBFBF")
+        self.textLabel.place(relx = 0, rely = 0.87, relheight = 0.1, relwidth = 1)
+        #self.offLabel.place(relx = 0, rely = 0.25, relheight = 0.1, relwidth = 1)
+        #self.offLabel.lower()
 
     def place(self,relx=0,rely=0,relheight=0,relwidth=0):
         self.sliderFrame.place(relx=relx,rely=rely,relheight=relheight,relwidth=relwidth)
@@ -84,9 +87,11 @@ class SwitchButton(tkinter.Frame):
         #draw the new rectangle, in the position prescribed by the state.
         if s:
             self.sliderCanvas.create_rectangle(xMargin, yMargin, canvasWidth-xMargin, canvasHeight/2, fill = buttonColor, width=5)
-            self.sliderCanvas.create_rectangle(xMargin, yMargin, canvasWidth - xMargin, canvasHeight / 2, fill="")
+            self.sliderCanvas.create_text(canvasWidth/2, 3*canvasHeight/4, text=">ble<", fill="#BFBFBF", font=self.default_font)
+
         elif not s:
             self.sliderCanvas.create_rectangle(xMargin, canvasHeight/2, canvasWidth-xMargin, canvasHeight-yMargin, fill=buttonColor,width=5)
+            self.sliderCanvas.create_text(canvasWidth/2, canvasHeight/4, text=">usb<", fill="#BFBFBF", font=self.default_font)
         else:
             pass
 

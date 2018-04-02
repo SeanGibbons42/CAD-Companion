@@ -43,11 +43,13 @@ class IMUPlot(tkinter.Canvas):
         self.graphfigure.set_figwidth(width_in)
         self.graphfigure.set_figheight(height_in)
 
+        plotfont = {'fontname':'Helvetica'}
+
         self.graphaxes.plot([1,2,3], [1,2,3], color='#f9f504', linewidth=4)
         self.graphaxes.plot([0,1,2], [1,2,3], color='#83f904', linewidth=4)
-        self.graphaxes.set_title("Motion Vectors\n", color=(1,1,1), fontsize="30")
-        self.graphaxes.set_xlabel("Time [s]", color=(1,1,1), fontsize = "20", labelpad=20)
-        self.graphaxes.set_ylabel("Acceleration [g]", color=(1,1,1), fontsize = "20", labelpad=20)
+        self.graphaxes.set_title("Motion Vectors\n", color=(0.75,0.75,0.75), fontsize="40", **plotfont)
+        self.graphaxes.set_xlabel("Time [s]", color=(0.75,0.75,0.75), fontsize = "25", labelpad=20, **plotfont)
+        self.graphaxes.set_ylabel("Acceleration [g]", color=(0.75,0.75,0.75), fontsize = "25", labelpad=20, **plotfont)
 
         #map the plot onto a widget
         self.canvas = FigureCanvasTkAgg(self.graphfigure, self)
@@ -67,9 +69,9 @@ class Panel(tkinter.LabelFrame):
         self.create_switches()
 
     def create_buttons(self):
-        self.connectBUT = tkinter.Button(self, text = "connect", command = self.connect, bg = "#4E4E4E", fg = "#BFBFBF", font = ("Helvetica",20))
-        self.recordBUT = tkinter.Button(self, text = "record", command = self.record, bg = "#4E4E4E", fg = "#BFBFBF", font = ("Helvetica",20))
-        self.connectBUT.place(relx = 0.2, rely = 0.45, relwidth = 0.6, relheight = 0.2)
+        self.connectBUT = tkinter.Button(self, text = "connect", command = self.connect, bd=7, bg = "#4E4E4E", fg = "#BFBFBF", font = ("Helvetica",20))
+        self.recordBUT = tkinter.Button(self, text = "record", command = self.record, bd=7, bg = "#4E4E4E", fg = "#BFBFBF", font = ("Helvetica",20))
+        self.connectBUT.place(relx = 0.2, rely = 0.5, relwidth = 0.6, relheight = 0.2)
         self.recordBUT.place(relx = 0.2, rely = 0.75, relwidth = 0.6, relheight = 0.2)
 
 

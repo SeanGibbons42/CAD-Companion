@@ -10,25 +10,6 @@ At the heart of the CAD companion lies an arduino-101 microcontroller, complete 
 CAD Companion is 100% open source! We'll post STL files for 3d printing here once we finalize the design, along with the software.
 
 ## About the Project
-This project started as a design project for an engineering class.
+This project started as a design project for an engineering coursework
 
-+@##########M/             :@#########@/
-##############$;H#######@;+#############
-###############M########################
-##############X,-/++/+%+/,%#############
-############M$:           -X############
-##########H;.      ,--.     =X##########
-:X######M;     -$H@M##MH%:    :H#######@
-  =%#M+=,   ,+@#######M###H:    -=/M#%
-  %M##@+   .X##$, ./+- ./###;    +M##%
-  %####M.  /###=         @##M.   X###%
-  %####M.  ;M##H:.     =$###X.   $###%
-  %####@.   /####M$-./@#####:    %###%
-  %H#M/,     /H###########@:     ./M#%
- ;$H##@@H:    .;$HM#MMMH$;,   ./H@M##M$=
-X#########%.      ..,,.     .;@#########
-###########H+:.           ./@###########
-##############/ ./%%%%+/.-M#############
-##############H$@#######@@##############
-##############X%########M$M#############
-+M##########H:            .$##########X=
+

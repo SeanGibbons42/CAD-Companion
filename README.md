@@ -6,3 +6,7 @@ The CAD Companion represents a quantum leap in human-computer interaction. From 
 At the heart of the CAD companion lies an arduino-101 microcontroller, complete with a 6-axis IMU and BLE hardware. All you have to do is download an extension for your favorite CAD software, connect the cube, and get CADing.
 
 ## Where can I get one?
+CAD Companion is 100% open source! We'll post STL files for 3d printing here once we finalize the design, along with the software.
+
+## About the Project
+This project started as a design project for an engineering class.

@@ -1,45 +1,54 @@
 class AppModel():
     def __init__(self, bsize):
-        self.buffer_size = buffer_size
+        self.buffer_size = bsize
+        self.queues = {
+            "time":DataQueue(bsize),
 
-        self.ax_queue = DataQueue(b_size)
-        self.ay_queue = DataQueue(b_size)
-        self.az_queue = DataQueue(b_size)
+            "ax":DataQueue(bsize),
+            "ay":DataQueue(bsize),
+            "az":DataQueue(bsize),
 
-        self.gx_queue = DataQueue(b_size)
-        self.gy_queue = DataQueue(b_size)
-        self.gz_queue = DataQueue(b_size)
+            "gx":DataQueue(bsize),
+            "gy":DataQueue(bsize),
+            "gz":DataQueue(bsize),
 
-        self.gnet_queue = DataQueue(b_size)
-        self.anet_queue = DataQueue(b_size)
+            "gnet":DataQueue(bsize),
+            "anet":DataQueue(bsize)
+        }
 
-        self.time_queue = DataQueue(b_size)
 
     def parse_data(self, data):
         """
         Parses raw gyro data and sends it to the data queues
-
         Format: <Time>A<Ax>#<Ay>#<Az>#G<Gx>#<Gy>#<Gz>#
         """
-        #first, get the timestamp
+        a = []
+        g = []
+
+        #first, get the timestamp for the measurement
         old_ind = 0
         n_ind = data.index('A')
-        self.time_queue.enqueue( float(data[old_ind:n_ind]) )
-        #next, grab the three accelerometer measurementsd
+        self.queues['time'].enqueue( float(data[old_ind:n_ind]) )
+
+        #next, grab the three accelerometer measurements
         for i in range(3):
             old_ind = n_ind + 1
+            n_ind = data.index('#', old_ind)
             a.append(float(data[old_ind:n_ind]))
+            
         #third, we need to get the gyro values
         n_ind += 1
         for i in range(3):
             old_ind = n_ind + 1
+            n_ind = data.index('#', old_ind)
             g.append(float(data[old_ind:n_ind]))
-        #place the datapoints into the appropriate queue
-        self.ax_queue.enqueue(a[0]); self.ay_queue.enqueue(a[1]); self.az.enqueue(a[2])
-        self.gx_queue.enqueue(g[0]); self.gy_queue.enqueue(g[1]); self.gz.enqueue(g[2])
 
-        self.anet_queue.enqueue(self.norm(a))
-        self.gnet_queue.enqueue(self.norm(g))
+        #place the datapoints into the appropriate queue
+        self.queues['ax'].enqueue(a[0]); self.queues['ay'].enqueue(a[1]); self.queues['az'].enqueue(a[2])
+        self.queues['gx'].enqueue(g[0]); self.queues['gy'].enqueue(g[1]); self.queues['gz'].enqueue(g[2])
+
+        self.queues['anet'].enqueue(self.norm(a))
+        self.queues['gnet'].enqueue(self.norm(g))
 
     def norm(self, vec):
         """
@@ -47,12 +56,12 @@ class AppModel():
         vectors.
         """
         sum = 0
+        #sum the squares of the components
+        for component in vec:
+            sum += component**2
 
-        for comp in vec:
-            sum += comp**2
-
+        #return the sqrt of the sum
         return sum**0.5
-
 
 class DataQueue():
     """
@@ -77,7 +86,8 @@ class DataQueue():
 
     def dequeue(self):
         """
-        Removes and element from the front of the queue
+        Removes and element from the front of the queue.
+        Accepts - nothing
         """
         self.data.pop(0)
         self.size -= 1
@@ -89,8 +99,34 @@ class DataQueue():
         return self.data
 
     def set_size(self, nsize):
+        """
+        Set the maximum length of the arrayself.
+        Accepts: integer nsize: the new max size
+        Returns: None
+        """
         self.size = nsize
 
     def set_data(self, ndata, msize):
+        """
+        Set the contents of the queue to be the elements of a list. Also requires
+        that a new max size of the array to be specified.
+        Accepts: list ndata - new data
+                 integer msize - new max size
+        """
         self.data = ndata
         self.maxsize = msize
+
+    def peek_head(self):
+        """
+        Return the FI (first in element).
+        Accepts - nothing
+        Returns - <any type> data: current FI datapoint
+        """
+        return self.data[0]
+
+    def peek_tail(self):
+        """
+        Returns the LI (last in element.)
+        Returns: - <any type> data: current LI datapoint
+        """
+        return self.data[-1]

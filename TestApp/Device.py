@@ -1,13 +1,6 @@
-"""
-Collin - Merge yer code here, but use the interface defined in the BLEduino class.
-Make sure all the skeleton methods stay there even if you don't implement themself.
-                ----I wish python had real interfaces like java----
 
-
-Why? I basically want these two classes to work interchangably like python variables
-We can pop between the two modes of communication 
-"""
-import pyserial
+import serial
+import serial.tools.portlist
 
 class USBduino():
     def __init__(self):
@@ -17,37 +10,73 @@ class USBduino():
         """
         Opens serial connection to the arduino.
         """
-        pass
+        portname = self.find_port(vid, pid)
+
+        self.port = serial.Serial(portname, baud)
+
+    def find_port(self, vid, pid):
+        """
+        Finds the port name for the desired device.
+        """
+
+        ports = portlist.comports()
+        for port in portlist:
+            if port.vid == vid and port.pid = pid:
+                return port.device
+        return None
 
     def close(self):
         """
         Closes the arduino port
         """
-        pass
+        self.port.close()
 
     def record(self):
         """
         signal the arduino to begin relaying data
+        signal is "r\n"
         """
-        pass
+        str = "r\n".encode('ascii')
+        self.port.write(str)
 
     def standby(self):
         """
         tell the arduino to standby (stop sending data)
+        signal is "s\n"
         """
-        pass
+        str = "s\n".encode('ascii')
+        self.port.write(str)
 
     def imu_calibrate(self):
         """
         signal the arduino to calibrate its IMU
+        signal is simple "c\n".
         """
-        pass
+        str = "c\n".encode('ascii')
+        self.port.write(str)
+
 
     def poll(self):
         """
-        poll the arduino serial port for new data. When new data arrives, build up
+        poll the arduino's serial port for new data. When new data arrives, build up
         a data string until a newline is reached. At this point, send the data to the appmodel
         """
+        while True:
+
+            time.sleep(100)
+            str = ""
+
+            #iterate while the port buffer has data
+            while not self.port.in_waiting() == 0:
+                #build up a string with each new character
+                nchar = self.port.read()
+                nchar.encode('utf-8')
+                if nchar == '\n':
+                    #save string
+                    break
+                else:
+                    str += nchar
+
 
 class BLEduino():
     """

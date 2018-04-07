@@ -88,5 +88,9 @@ class Panel(tkinter.LabelFrame):
     def toggle_source(self):
         pass
 
-    #def place(self, x, y, w, h):
-    #    tkinter.LabelFrame.place(relx = x, rely = y, relwidth = w, relheight = h)
+class USB_Popup(tkinter.TopLevel):
+
+    def __init__(self):
+        pass
+
+    

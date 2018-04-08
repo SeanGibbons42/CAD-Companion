@@ -1,6 +1,6 @@
 
 import serial
-import serial.tools.portlist
+import serial.tools.list_ports as portlist
 
 class USBduino():
     def __init__(self):
@@ -21,7 +21,7 @@ class USBduino():
 
         ports = portlist.comports()
         for port in portlist:
-            if port.vid == vid and port.pid = pid:
+            if port.vid == vid and port.pid == pid:
                 return port.device
         return None
 

@@ -1,5 +1,6 @@
 import tkinter
-import ControlFrames as cf
+import Views as vw
+import Device as dv
 if __name__ == "__main__":
     app = tkinter.Tk()
     app.geometry("2500x1500")
@@ -9,8 +10,9 @@ if __name__ == "__main__":
     ##################
     #initialize UI components here
     ##################
-    panel = cf.Panel()
-    graph = cf.IMUPlot()
+    cube  = dv.USBduino()
+    panel = vw.Panel(devicemod=cube)
+    graph = vw.IMUPlot()
 
     panel.place(relx = 0.75, rely = 0.05, relwidth = 0.2, relheight = 0.9)
     graph.place(relx = 0.05, rely = 0.05, relwidth = 0.68, relheight = 0.9)

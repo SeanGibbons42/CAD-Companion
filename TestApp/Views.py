@@ -79,6 +79,9 @@ class Panel(tkinter.LabelFrame):
         self.create_switches()
 
     def create_buttons(self):
+        """
+        Initialize interface buttons
+        """
         self.connectBUT = tkinter.Button(self, text="connect", command=self.connect, bd=7, bg=self.bcol, fg=self.txtcol, font = ("Helvetica",20))
         self.recordBUT = tkinter.Button(self, text="record", command=self.record, bd=7, bg=self.bcol, fg=self.txtcol, font = ("Helvetica",20))
         self.connectBUT.place(relx = 0.2, rely = 0.5, relwidth = 0.6, relheight = 0.2)
@@ -86,6 +89,9 @@ class Panel(tkinter.LabelFrame):
 
 
     def create_switches(self):
+        """
+        #initialize the source selection switch. (Not used atm as we ditched bluetooth)
+        """
         self.source_switch = SwitchButton(self, text = "source", onclick = self.toggle_source, font = ("Helvetica", 20), bg = self.bcol)
         self.source_switch.place(relx = 0.25, rely = 0.1, relwidth = 0.5, relheight = 0.3)
 
@@ -110,43 +116,58 @@ class Panel(tkinter.LabelFrame):
     def toggle_source(self):
         pass
 
-class USB_Popup(tkinter.TopLevel):
+class USB_Popup(tkinter.Toplevel):
 
     def __init__(self, master, device, bg_col="#292929", txt_col="#BFBFBF", button_col="#4E4E4E", default_font = "Helvetica"):
         self.parent = master
-        self.device = devicemod
+        self.device = device
         self.default_font = default_font
 
+        self.field_color = button_col
         self.button_color = button_col
         self.text_color = txt_col
+        self.bg_color = bg_col
 
 
         super().__init__(bg = bg_col)
-        self.geometry = ("500x300+500+500")
+        self.geometry("1200x600")
         self.title = "USB Connect"
 
-        create_buttons()
-        create_text()
-        create_dropdowns()
+        self.create_buttons()
+        self.create_text()
+        self.create_dropdowns()
+        self.create_lbls()
+
+        self.get_defaults('serialdefaults.txt')
 
     def create_buttons(self):
-        self.portBUT = tkinter.Button(self, text = "List Ports", font=(self.default_font, 20),
+        """
+        Initialize buttons on the dialog.
+        """
+        self.portBUT = tkinter.Button(self, text = "List Ports", font=(self.default_font, 18),
                                         command = self.listports, bg = self.button_color,
                                         fg = self.text_color)
-        self.cancelBUT = tkinter.Button(self, text = "Cancel", font = (self.default_font, 20),
+        self.cancelBUT = tkinter.Button(self, text = "Cancel", font = (self.default_font, 14),
                                         command = self.on_cancel, bg = self.button_color,
                                         fg = self.text_color)
-        self.connectBUT = tkinter.Button(self, text = "Connect", font = (self.default_font, 20),
+        self.connectBUT = tkinter.Button(self, text = "Connect", font = (self.default_font, 14),
                                         command = self.on_connect, bg = self.button_color,
                                         fg = self.text_color)
+        self.saveBUT = tkinter.Button(self, text = "Save", font = (self.default_font, 14),
+                                        command = self.save_defaults, bg = self.button_color,
+                                        fg = self.text_color)
+        self.refreshBUT = tkinter.Button(self, text = "Refresh", font = (self.default_font, 14),
+                                        command = self.refresh_ports, bg = self.button_color,
+                                        fg = self.text_color)
 
-        self.portBUT.place(relx = 0.45, rely = 0.05, relwidth = 0.1, relheight = 0.6)
-        self.cancelBUT.place(relx = 0.5, rely = 0.8, relwidth = 0.15, relheight = 0.15)
-        self.portBUT.place(relx = 0.7, rel6 = 0.8, relwidth = 0.15, relheight = 0.15)
-
+        self.portBUT.place(relx = 0.5, rely = 0.57, relwidth = 0.45, relheight = 0.15)
+        self.cancelBUT.place(relx = 0.55, rely = 0.8, relwidth = 0.15, relheight = 0.15)
+        self.connectBUT.place(relx = 0.75, rely = 0.8, relwidth = 0.15, relheight = 0.15)
+        self.saveBUT.place(relx = 0.075, rely = 0.8, relwidth = 0.15, relheight = 0.15)
+        self.refreshBUT.place(relx = 0.3, rely = 0.8, relwidth = 0.15, relheight = 0.15)
 
     def create_lbls(self):
-        self.baudLBL = tkinter.Label(self, text = "Baud Rate:", font = (self.default_font,16),
+        self.baudLBL = tkinter.Label(self, text = "Baud Rate:", font = (self.default_font, 16),
                                         bg = self.button_color, fg = self.text_color)
         self.portLBL = tkinter.Label(self, text = "Port Name:", font = (self.default_font,16),
                                         bg = self.button_color, fg = self.text_color)
@@ -155,37 +176,45 @@ class USB_Popup(tkinter.TopLevel):
         self.pidLBL = tkinter.Label(self, text = "pid", font = (self.default_font,16),
                                         bg = self.button_color, fg = self.text_color)
 
-        self.baudLBL.place(relx = 0.05, rely = 0.05, relwidth = 0.1, relheight = 0.1)
-        self.portLBL.place(relx = 0.05, rely = 0.21, relwidth = 0.1, relheight = 0.1)
-        self.vidLBL.place(relx = 0.05, rely = 0.37, relwidth = 0.1, relheight = 0.1)
-        self.pidLBL.place(relx = 0.25, rely = 0.37, relwidth = 0.1, relheight = 0.1)
+        self.baudLBL.place(relx = 0.05, rely = 0.15, relwidth = 0.2, relheight = 0.1)
+        self.portLBL.place(relx = 0.05, rely = 0.31, relwidth = 0.2, relheight = 0.1)
+        self.vidLBL.place(relx = 0.125, rely = 0.47, relwidth = 0.1, relheight = 0.1)
+        self.pidLBL.place(relx = 0.125, rely = 0.6, relwidth = 0.1, relheight = 0.1)
 
 
     def create_text(self):
         self.vidFLD = tkinter.Entry(self, bg = self.field_color, fg = self.text_color)
         self.pidFLD = tkinter.Entry(self, bg = self.field_color, fg = self.text_color)
-        self.portFLD = tkinter.Entry(self, bg = self.field_color, fg = self.text_color)
+        self.portFLD = tkinter.Text(self, bg = self.field_color, fg = self.text_color)
 
-        self.vidFLD.place(relx = 0.15, rely = 0.37, relwidth = 0.1, relheight = 0.1)
-        self.vidFLD.place(relx = 0.35, rely = 0.37, relwidth = 0.1, relheight = 0.1)
-        self.portFLD.place(relx = 0.6, rely = 0.05, relwidth = 0.35, relheight = 0.6)
+        self.vidFLD.place(relx = 0.25, rely = 0.47, relwidth = 0.15, relheight = 0.1)
+        self.pidFLD.place(relx = 0.25, rely = 0.6, relwidth = 0.15, relheight = 0.1)
+        self.portFLD.place(relx = 0.5, rely = 0.13, relwidth = 0.45, relheight = 0.42)
 
     def create_dropdowns(self):
+        import serial
+
         #baud and port store the values from their respective dropdowns
-        self.baud = tkinter.IntVar()
-        self.port = tkinter.StringVar()
+        self.baud = tkinter.IntVar(self)
+        self.port = tkinter.StringVar(self)
 
         #pre-set data options
         self.baud.set(9600)
         bauds = [300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200]
-        ports = [port.name for port in serial.tools.list_ports.comports]
+        ports = [port.name for port in serial.tools.list_ports.comports()]
+        ports.append("None")
 
         #instantiate dropdowns and place them on the scrfeen
         self.baud_select = tkinter.OptionMenu(self, self.baud, *bauds)
-        self.port_select = tkinter.Combobox(self, self.port, *ports)
+        self.port_select = tkinter.OptionMenu(self, self.port, *ports)
 
-        self.baud_select.place(relx = 0.15, rely = 0.05, relwidth = 0.1, relheight = 0.1)
-        self.baud_select.place(relx = 0.15, rely = 0.21, relwidth = 0.1, relheight = 0.1)
+        #set color
+        self.baud_select.config(bg = self.button_color, fg = self.text_color, highlightbackground=self.bg_color)
+        self.port_select.config(bg = self.button_color, fg = self.text_color, highlightbackground=self.bg_color)
+
+        #place widgets on the screen
+        self.baud_select.place(relx = 0.25, rely = 0.15, relwidth = 0.2, relheight = 0.1)
+        self.port_select.place(relx = 0.25, rely = 0.31, relwidth = 0.2, relheight = 0.1)
 
     def get_defaults(self, fname):
         """
@@ -196,24 +225,34 @@ class USB_Popup(tkinter.TopLevel):
         vid_str = def_file.readline()
         pid_str = def_file.readline()
 
+        print("VID", vid_str)
+        print("PID", pid_str)
         #parse out the value
-        vid = vid_str[vid_str.index(':'):-1]
-        pid = vid_str[pid_str.index(':'):-1]
+        vid = vid_str[vid_str.index(':')+1:-1]
+        pid = pid_str[pid_str.index(':')+1:-1]
 
         #return the integer version
-        return int(pid), int(vid)
+        self.vidFLD.insert(0, vid)
+        self.pidFLD.insert(0, pid)
 
-    def save_defaults(self, fname, vid, pid):
+        def_file.close()
+
+    def save_defaults(self):
         #open the file in write mode (overwrites file contents)
-        def_file = open(fname, 'w')
+        def_file = open('serialdefaults.txt', 'w')
 
+        #get text from window
+        vid = int(self.vidFLD.get())
+        pid = int(self.pidFLD.get())
+
+        #format text as string
         vid_str = "vid:{}\n".format(vid)
         pid_str = "pid:{}\n".format(pid)
 
-        file.write(vid_str)
-        file.write([pid_str])
-
-        file.close()
+        #write data to file and close file
+        def_file.write(vid_str)
+        def_file.write(pid_str)
+        def_file.close()
 
     def on_cancel(self):
         """
@@ -227,3 +266,26 @@ class USB_Popup(tkinter.TopLevel):
         """
         self.device.open(self.pid, self.vid, self.baud)
         self.parent.connectBUT.config(bg = "#3BAF53")
+
+    def refresh_ports(self):
+        import serial
+        ports = [port.name for port in serial.tools.list_ports.comports()]
+        for port in ports:
+            self.portlist.add_command(label = port)
+
+    def listports(self):
+        import serial
+        #clear the field
+        self.portFLD.delete(1.0, tkinter.END)
+        
+        #grab the port data
+        ports = [port.name for port in serial.tools.list_ports.comports()]
+        vids = [port.vid for port in serial.tools.list_ports.comports()]
+        pids = [port.pid for port in serial.tools.list_ports.comports()]
+
+        str = ""
+        #display the port data
+        for port, vid, pid in zip(ports, vids, pids):
+            str += "Port: {}, Vendor ID: {}, Product ID: {}\n".format(port, vid, pid)
+
+        self.portFLD.insert(1.0, str)

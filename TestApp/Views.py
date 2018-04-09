@@ -105,10 +105,12 @@ class Panel(tkinter.LabelFrame):
         elif not self.isconnected:
             #send control to the usb configuration dialog
             usb_config = USB_Popup(self, self.device)
+
         else:
             #if we are already connected, then disconnect.
             self.device.close()
             self.connectBUT.config(bg = self.bcol)
+            self.isconnected = False
 
     def record(self):
         pass
@@ -200,13 +202,13 @@ class USB_Popup(tkinter.Toplevel):
 
         #pre-set data options
         self.baud.set(9600)
-        bauds = [300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200]
-        ports = [port.name for port in serial.tools.list_ports.comports()]
-        ports.append("None")
+        self.bauds = [300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200]
+        self.ports = [port.device for port in serial.tools.list_ports.comports()]
+        self.ports.append("None")
 
         #instantiate dropdowns and place them on the scrfeen
-        self.baud_select = tkinter.OptionMenu(self, self.baud, *bauds)
-        self.port_select = tkinter.OptionMenu(self, self.port, *ports)
+        self.baud_select = tkinter.OptionMenu(self, self.baud, *self.bauds)
+        self.port_select = tkinter.OptionMenu(self, self.port, *self.ports)
 
         #set color
         self.baud_select.config(bg = self.button_color, fg = self.text_color, highlightbackground=self.bg_color)
@@ -264,28 +266,40 @@ class USB_Popup(tkinter.Toplevel):
         """
         Connect to the arduino, change the button color, and close the window
         """
-        self.device.open(self.pid, self.vid, self.baud)
+        vid = int(self.vidFLD.get())
+        pid = int(self.pidFLD.get())
+
+        self.device.open(pid, vid, self.baud.get())
         self.parent.connectBUT.config(bg = "#3BAF53")
+        self.parent.isconnected = True
+        self.destroy()
 
     def refresh_ports(self):
         import serial
-        ports = [port.name for port in serial.tools.list_ports.comports()]
+        ports = [port.device for port in serial.tools.list_ports.comports()]
+        ports.append("None")
         for port in ports:
-            self.portlist.add_command(label = port)
+            #self.port_select.add_command(label = port)
+            self.ports = ports
+            menu = self.port_select["menu"]
+            menu.delete(0, "end")
+            for string in self.ports:
+                menu.add_command(label=string, command=lambda value=string: self.port.set(value))
+
 
     def listports(self):
         import serial
         #clear the field
         self.portFLD.delete(1.0, tkinter.END)
-        
+
         #grab the port data
-        ports = [port.name for port in serial.tools.list_ports.comports()]
+        ports = [port.device for port in serial.tools.list_ports.comports()]
         vids = [port.vid for port in serial.tools.list_ports.comports()]
         pids = [port.pid for port in serial.tools.list_ports.comports()]
 
         str = ""
         #display the port data
         for port, vid, pid in zip(ports, vids, pids):
-            str += "Port: {}, Vendor ID: {}, Product ID: {}\n".format(port, vid, pid)
+            str += "Port: {}, VID: {}, PID: {}\n".format(port, vid, pid)
 
         self.portFLD.insert(1.0, str)

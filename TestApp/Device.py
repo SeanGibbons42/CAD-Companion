@@ -20,7 +20,7 @@ class USBduino():
         """
 
         ports = portlist.comports()
-        for port in portlist:
+        for port in ports:
             if port.vid == vid and port.pid == pid:
                 return port.device
         return None

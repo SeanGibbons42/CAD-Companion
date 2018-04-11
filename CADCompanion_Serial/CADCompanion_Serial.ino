@@ -1,11 +1,11 @@
 bool standby = true;
 bool record = false;
-bool b1 = false;
-bool b2 = false;
-bool b3 = false;
-bool b4 = false;
-bool b5 = false;
-bool b6 = false;
+int b1 = 0;
+int b2 = 0;
+int b3 = 0;
+int b4 = 0;
+int b5 = 0;
+int b6 = 0;
 
 unsigned long starttime = millis();
 
@@ -42,7 +42,14 @@ void loop()
   //if we are in record mode we will send some data to the computer
   if(record)
   {
-    starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,1,1,1,1,1,1);
+    //buttons attached to pins 13-8
+    b1 = digitalRead(13);
+    b2 = digitalRead(12);
+    b3 = digitalRead(11);
+    b4 = digitalRead(10);
+    b5 = digitalRead(9);
+    b6 = digitalRead(8);
+    starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,b1,b2,b3,b4,b5,b6);
   }
   //no matter what mode we are in we want to wait a bit
   delay(100);

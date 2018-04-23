@@ -1,45 +1,21 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 #include "CurieIMU.h"
 
 bool standby = false;
 bool record = true;
-=======
+
 bool standby = true;
 bool record = false;
->>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
-=======
-bool standby = true;
-bool record = false;
->>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
-=======
-bool standby = true;
-bool record = false;
->>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
+
+
 bool b1 = false;
 bool b2 = false;
 bool b3 = false;
 bool b4 = false;
 bool b5 = false;
 bool b6 = false;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-bool standby = true;
-bool record = false;
-int b1 = 0;
-int b2 = 0;
-int b3 = 0;
-int b4 = 0;
-int b5 = 0;
-int b6 = 0;
->>>>>>> 684ec3f74acc220ed1c39547f896df7c79f5c95f
-=======
->>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
-=======
->>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
+
+
 
 unsigned long starttime = millis();
 
@@ -76,35 +52,14 @@ void loop()
   //if we are in record mode we will send some data to the computer
   if(record)
   {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     for(byte button = 0; button < 4; button++){but_vals[button] = digitalRead(but_pins[button]);}
     double imudat[6];
     
     poll_imu(&imudat[0]);    
     starttime = senddata(starttime,imudat[0],imudat[1],imudat[2],imudat[3],imudat[4],imudat[5],but_vals[0],but_vals[1],but_vals[2],but_vals[3],1,1);
     //starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,but_vals[0],but_vals[0],but_vals[0],but_vals[0],1,1);
-=======
-    //buttons attached to pins 13-8
-    b1 = digitalRead(13);
-    b2 = digitalRead(12);
-    b3 = digitalRead(11);
-    b4 = digitalRead(10);
-    b5 = digitalRead(9);
-    b6 = digitalRead(8);
-    starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,b1,b2,b3,b4,b5,b6);
->>>>>>> 684ec3f74acc220ed1c39547f896df7c79f5c95f
-=======
-    starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,1,1,1,1,1,1);
->>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
-=======
-    starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,1,1,1,1,1,1);
->>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
-=======
-    starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,1,1,1,1,1,1);
->>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
+
   }
   //no matter what mode we are in we want to wait a bit
   delay(100);

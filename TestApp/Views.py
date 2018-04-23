@@ -1,6 +1,4 @@
 import tkinter
-
-import serial
 from Switch import SwitchButton
 
 #MPL Imports and setup
@@ -10,8 +8,6 @@ import matplotlib.animation as animation
 import matplotlib.backends.tkagg as tkagg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-
-
 class IMUPlot(tkinter.Canvas):
     """
     IMUPlot is a matplotlib implementation that will continuously plot a datafeed
@@ -20,8 +16,6 @@ class IMUPlot(tkinter.Canvas):
     def __init__(self, appmod=None):
         tkinter.Canvas.__init__(self)
         self.dpi = 100
-
-        self.appdata = appmod
 
         #initialize plot objects
         self.graph = None
@@ -44,6 +38,7 @@ class IMUPlot(tkinter.Canvas):
             self.update()
             width, height = self.winfo_width(), self.winfo_height()
 
+        print(width, height)
         width_in, height_in = width/self.dpi, height/self.dpi
         self.graphfigure.set_figwidth(width_in)
         self.graphfigure.set_figheight(height_in)
@@ -61,20 +56,11 @@ class IMUPlot(tkinter.Canvas):
         self.canvas.show()
         self.canvas.get_tk_widget().place(relx=0, rely= 0, relheight = 1, relwidth = 1)
 
-        self.ani = animation.FuncAnimation(self.graphfigure, self.animate, interval = 250)
+        #self.ani = animation.FuncAnimation(self.graphfigure, self.animate, interval = 1000)
 
 
     def animate(self, i):
-        #time.sleep(0.0333)
-        #grab dataqueues
-        times = self.appdata.queues["time"]
-        w = self.appdata.queues["gnet"]
-        a = self.appdata.queues["anet"]
-
-        #plot the velocity and acceleration
-        self.graphaxes.clear()
-        self.graphaxes.plot(times.get_data(), a.get_data(), color='#f9f504', linewidth=4)
-        self.graphaxes.plot(times.get_data(), w.get_data(), color='#83f904', linewidth=4)
+        pass
 
 class Panel(tkinter.LabelFrame):
     def __init__(self, devicemod=None):
@@ -90,8 +76,7 @@ class Panel(tkinter.LabelFrame):
         #call parent constructor and init control elements
         tkinter.LabelFrame.__init__(self, text="Controls", bg=self.bgcol, fg=self.txtcol, font=("Helvetica",12))
         self.create_buttons()
-        self.create_lbls()
-        #self.create_switches()
+        self.create_switches()
 
     def create_buttons(self):
         """
@@ -102,10 +87,6 @@ class Panel(tkinter.LabelFrame):
         self.connectBUT.place(relx = 0.2, rely = 0.5, relwidth = 0.6, relheight = 0.2)
         self.recordBUT.place(relx = 0.2, rely = 0.75, relwidth = 0.6, relheight = 0.2)
 
-    def create_lbls(self):
-        self.img = tkinter.PhotoImage(file = "logo.png")
-        self.logolabel = tkinter.Label(self, image = self.img, bg = self.bgcol)
-        self.logolabel.place(relx = 0.1, rely = 0.05, relwidth = 0.8, relheight = 0.35)
 
     def create_switches(self):
         """
@@ -132,77 +113,10 @@ class Panel(tkinter.LabelFrame):
             self.isconnected = False
 
     def record(self):
-        if self.device is None:
-            return
-
-        elif self.device.rec:
-            self.device.standby()
-            connectBUT.config(bg = self.bcol)
-
-        else:
-            self.device.record()
-            connectBUT.config(bg = "#3BAF53")
-
+        pass
 
     def toggle_source(self):
         pass
-
-class ButtonDisplay(tkinter.LabelFrame):
-    def __init__(self, offc, onc, tc):
-        tkinter.LabelFrame.__init__(self, text = "Buttons", bg = offc, fg = tc , font=("Helvetica",12))
-        #Bind resize event
-        self.canv = tkinter.Canvas(self, bg = offc)
-        self.canv.place(relx = 0, rely = 0, relwidth = 1, relheight = 1)
-
-        self.states = [0, 0, 0 ,0]
-        self.offcol = offc
-        self.oncol  = onc
-        self.tcol   = tc
-        self.colors = [offc for i in range(4)]
-
-        self.update()
-        self.canv.update()
-        self.draw_circles()
-        self.bind("<Configure>", self.on_resize)
-
-    def draw_circles(self):
-        self.canv.delete("all")
-        self.canv.update()
-        w, h = self.canv.winfo_width(), self.canv.winfo_height()
-        #button diameter und radius
-        cw = int(h*0.6)
-        cwh = int(cw/2)
-
-        self.canv.create_oval(int(w/5)-cwh, int(h/2)-cwh, int(w/5)+cwh, int(h/2)+cwh, fill = self.colors[0], width = 6, outline = self.tcol)
-        self.canv.create_oval(int(2*w/5)-cwh, int(h/2)-cwh, int(2*w/5)+cwh, int(h/2)+cwh, fill = self.colors[1], width = 6, outline = self.tcol)
-        self.canv.create_oval(int(3*w/5)-cwh, int(h/2)-cwh, int(3*w/5)+cwh, int(h/2)+cwh, fill = self.colors[2], width = 6, outline = self.tcol)
-        self.canv.create_oval(int(4*w/5)-cwh, int(h/2)-cwh, int(4*w/5)+cwh, int(h/2)+cwh, fill = self.colors[3], width = 6, outline = self.tcol)
-
-    def on_resize(self, event):
-        self.draw_circles()
-
-    def set_but(self, n, state):
-        """
-        Set the state of a single button
-        Accepts: States - list of length 4 containing 1's and 0's indicating button states
-        """
-        if not (state == 1 or state == 0):
-            raise ValueError("Invalid state identifier. Accepts 1 ()")
-        if state == 1:
-            self.colors[n] = self.oncol
-        elif state == 0:
-            self.colors[n] = self.offcol
-
-        self.draw_circles()
-
-    def set_all(self, states):
-        """
-        Set all buttons at once.
-        Accepts: States - list of length 4 containing 1's and 0's indicating button states
-        """
-        for n, state in zip(range(4), states):
-            self.set_but(n, state)
-
 
 class USB_Popup(tkinter.Toplevel):
 
@@ -280,6 +194,7 @@ class USB_Popup(tkinter.Toplevel):
         self.portFLD.place(relx = 0.5, rely = 0.13, relwidth = 0.45, relheight = 0.42)
 
     def create_dropdowns(self):
+        import serial
 
         #baud and port store the values from their respective dropdowns
         self.baud = tkinter.IntVar(self)
@@ -312,6 +227,8 @@ class USB_Popup(tkinter.Toplevel):
         vid_str = def_file.readline()
         pid_str = def_file.readline()
 
+        print("VID", vid_str)
+        print("PID", pid_str)
         #parse out the value
         vid = vid_str[vid_str.index(':')+1:-1]
         pid = pid_str[pid_str.index(':')+1:-1]
@@ -352,14 +269,13 @@ class USB_Popup(tkinter.Toplevel):
         vid = int(self.vidFLD.get())
         pid = int(self.pidFLD.get())
 
-        port = self.device.open(pid, vid, self.baud.get())
-        #if the
-        if port is not None:
-            self.parent.connectBUT.config(bg = "#3BAF53")
-            self.parent.isconnected = True
+        self.device.open(pid, vid, self.baud.get())
+        self.parent.connectBUT.config(bg = "#3BAF53")
+        self.parent.isconnected = True
         self.destroy()
 
     def refresh_ports(self):
+        import serial
         ports = [port.device for port in serial.tools.list_ports.comports()]
         ports.append("None")
         for port in ports:
@@ -370,7 +286,9 @@ class USB_Popup(tkinter.Toplevel):
             for string in self.ports:
                 menu.add_command(label=string, command=lambda value=string: self.port.set(value))
 
+
     def listports(self):
+        import serial
         #clear the field
         self.portFLD.delete(1.0, tkinter.END)
 

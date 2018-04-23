@@ -1,16 +1,29 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "CurieIMU.h"
 
 bool standby = false;
 bool record = true;
+=======
+bool standby = true;
+bool record = false;
+>>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
 bool b1 = false;
 bool b2 = false;
 bool b3 = false;
 bool b4 = false;
 bool b5 = false;
 bool b6 = false;
-
-byte but_pins[] = {2, 3, 4, 5};
-bool but_vals[4];
+=======
+bool standby = true;
+bool record = false;
+int b1 = 0;
+int b2 = 0;
+int b3 = 0;
+int b4 = 0;
+int b5 = 0;
+int b6 = 0;
+>>>>>>> 684ec3f74acc220ed1c39547f896df7c79f5c95f
 
 unsigned long starttime = millis();
 
@@ -18,10 +31,6 @@ void setup()
 {
   // put your setup code here, to run once:
   Serial.begin(19200);
-  CurieIMU.begin();
-  CurieIMU.setAccelerometerRange(2);
-  CurieIMU.setGyroRange(500);
-  for(int pin = 0; pin<4; pin++){ pinMode(pin, INPUT); }
 }
 
 void loop()
@@ -51,28 +60,30 @@ void loop()
   //if we are in record mode we will send some data to the computer
   if(record)
   {
+<<<<<<< HEAD
+<<<<<<< HEAD
     for(byte button = 0; button < 4; button++){but_vals[button] = digitalRead(but_pins[button]);}
     double imudat[6];
     
     poll_imu(&imudat[0]);    
     starttime = senddata(starttime,imudat[0],imudat[1],imudat[2],imudat[3],imudat[4],imudat[5],but_vals[0],but_vals[1],but_vals[2],but_vals[3],1,1);
     //starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,but_vals[0],but_vals[0],but_vals[0],but_vals[0],1,1);
+=======
+    //buttons attached to pins 13-8
+    b1 = digitalRead(13);
+    b2 = digitalRead(12);
+    b3 = digitalRead(11);
+    b4 = digitalRead(10);
+    b5 = digitalRead(9);
+    b6 = digitalRead(8);
+    starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,b1,b2,b3,b4,b5,b6);
+>>>>>>> 684ec3f74acc220ed1c39547f896df7c79f5c95f
+=======
+    starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,1,1,1,1,1,1);
+>>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
   }
   //no matter what mode we are in we want to wait a bit
   delay(100);
-}
-
-void poll_imu(double *idat){
-  // grab imu data
-  float ax, ay, az;
-  float gx, gy, gz;
-
-  CurieIMU.readAccelerometerScaled(ax, ay, az);
-  CurieIMU.readGyroScaled(gx, gy, gz);
-
-  idat[0] = (double)ax; idat[1] = (double)ay; idat[2] = (double)az; idat[3] = (double)gx; 
-  idat[4] = (double)gy; idat[5] = (double)gz;
-  
 }
 
 void calibrate()
@@ -82,23 +93,17 @@ void calibrate()
 
 void printeight(double b)
 {
-  if(b < 0){
-    Serial.print("1");
-    b *= -1;
-  }else{
-    Serial.print(0);
-  }
   //move the first four decimal places in front of the decimal
-  int a = b*1000;
+  int a = b*10000;
 
-  int digits[7] = {0,0,0,0,0,0,0};
-  for(int i=6;i>=0;i--)
+  int digits[8] = {0,0,0,0,0,0,0,0};
+  for(int i=7;i>=0;i--)
   {
     //we assemble the array in reverse order, since a%10 returns the ones digit
     digits[i] = a%10;
     a = a/10;
   }
-  for(int i=0;i<7;i++)
+  for(int i=0;i<8;i++)
   {
     //since we assembled backwards, we can print going forwards
     Serial.print(digits[i]);

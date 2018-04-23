@@ -35,7 +35,7 @@ class AppModel():
             old_ind = n_ind + 1
             n_ind = data.index('#', old_ind)
             a.append(float(data[old_ind:n_ind]))
-            
+
         #third, we need to get the gyro values
         n_ind += 1
         for i in range(3):

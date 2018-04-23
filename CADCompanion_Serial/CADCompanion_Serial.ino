@@ -1,10 +1,15 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "CurieIMU.h"
 
 bool standby = false;
 bool record = true;
+=======
+bool standby = true;
+bool record = false;
+>>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
 =======
 bool standby = true;
 bool record = false;
@@ -20,6 +25,7 @@ bool b4 = false;
 bool b5 = false;
 bool b6 = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 bool standby = true;
 bool record = false;
@@ -30,6 +36,8 @@ int b4 = 0;
 int b5 = 0;
 int b6 = 0;
 >>>>>>> 684ec3f74acc220ed1c39547f896df7c79f5c95f
+=======
+>>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
 =======
 >>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
 
@@ -71,6 +79,7 @@ void loop()
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     for(byte button = 0; button < 4; button++){but_vals[button] = digitalRead(but_pins[button]);}
     double imudat[6];
     
@@ -87,6 +96,9 @@ void loop()
     b6 = digitalRead(8);
     starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,b1,b2,b3,b4,b5,b6);
 >>>>>>> 684ec3f74acc220ed1c39547f896df7c79f5c95f
+=======
+    starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,1,1,1,1,1,1);
+>>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
 =======
     starttime = senddata(starttime,1234.5678,69,17,25.49,128.6,438.80125,1,1,1,1,1,1);
 >>>>>>> parent of 56e7b1f... Buttons - Arduino - Graph
